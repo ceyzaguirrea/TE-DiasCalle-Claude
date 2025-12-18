@@ -1,0 +1,44 @@
+table FechaFinVentas
+	isHidden
+	lineageTag: 92e9f37f-c5d7-4f17-a673-c981292ef2ea
+
+	column Name
+		dataType: string
+		isHidden
+		lineageTag: 92096b06-997f-4035-966d-a60e06360022
+		summarizeBy: none
+		sourceColumn: Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Value
+		dataType: string
+		isHidden
+		lineageTag: 81616062-994b-4174-aaf0-444d590f1bb3
+		summarizeBy: none
+		sourceColumn: Value
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition FechaFinVentas = m
+		mode: import
+		queryGroup: Parametros
+		source =
+				let
+				    Source = PeriodoDeudayVentas,
+				    RemovedOtherColumns = Table.SelectColumns(Source,{"FechaArchivoDeuda"}),
+				    #"Filtered Rows" = Table.SelectRows(RemovedOtherColumns, let latest = List.Max(RemovedOtherColumns[FechaArchivoDeuda]) in each [FechaArchivoDeuda] = latest),
+				    #"Renamed Columns" = Table.RenameColumns(#"Filtered Rows",{{"FechaArchivoDeuda", "FechaFinVenta"}}){0}
+				in
+				    #"Renamed Columns"
+
+	changedProperty = IsHidden
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Record
+

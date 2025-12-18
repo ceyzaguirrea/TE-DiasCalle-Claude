@@ -1,0 +1,129 @@
+table Calendario
+	lineageTag: 469356e3-c5ff-49a0-9f7a-5e6517ab9344
+	dataCategory: Time
+
+	column Fecha
+		dataType: dateTime
+		isKey
+		formatString: Short Date
+		lineageTag: 0da8e129-06d5-4b3e-ad81-184386be635a
+		summarizeBy: none
+		sourceColumn: Fecha
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Año
+		dataType: int64
+		formatString: 0
+		lineageTag: 26d50388-5d01-439b-bce9-33582de42c35
+		summarizeBy: sum
+		sourceColumn: Año
+
+		annotation SummarizationSetBy = Automatic
+
+	column MesOrden
+		dataType: int64
+		formatString: 0
+		lineageTag: 4306fd98-572a-4043-955b-ebb58fef98b6
+		summarizeBy: sum
+		sourceColumn: MesOrden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month Name'
+		dataType: string
+		lineageTag: 3717fda5-dbfd-4f98-b4a3-fc2046f316ca
+		summarizeBy: none
+		sourceColumn: Month Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fin Month'
+		dataType: int64
+		formatString: 0
+		lineageTag: 9bc33791-2cf0-44d7-8b55-9f664f3f0e5c
+		summarizeBy: sum
+		sourceColumn: Fin Month
+
+		annotation SummarizationSetBy = Automatic
+
+	column MesNombre
+		dataType: string
+		lineageTag: 83f68272-40de-43ee-bec5-ae8160e15720
+		summarizeBy: none
+		sourceColumn: MesNombre
+
+		annotation SummarizationSetBy = Automatic
+
+	column MesAñoOrden
+		dataType: int64
+		formatString: 0
+		lineageTag: fd58dd45-d53f-495b-a0c2-c2cbe73b12a0
+		summarizeBy: sum
+		sourceColumn: MesAñoOrden
+
+		annotation SummarizationSetBy = Automatic
+
+	column MesAño
+		dataType: string
+		lineageTag: 55a43448-2a6e-4ea5-ad8b-b2bcac821778
+		summarizeBy: none
+		sourceColumn: MesAño
+		sortByColumn: MesAñoOrden
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column FinMes
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: a894d322-dc1f-45af-ab28-d81c7fabd6ba
+		summarizeBy: none
+		sourceColumn: FinMes
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column AÑoActual
+		dataType: int64
+		formatString: 0
+		lineageTag: b8866e5a-b565-4bf2-8e72-193431912594
+		summarizeBy: sum
+		sourceColumn: AÑoActual
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Calendario = m
+		mode: import
+		source =
+				let
+				    Source = List.Dates(StartDate, Length, #duration(1, 0, 0, 0)),
+				    #"Converted to Table" = Table.FromList(Source, Splitter.SplitByNothing(), null, null, ExtraValues.Error),
+				    ColumnaRenombrada = Table.RenameColumns(#"Converted to Table",{{"Column1", "Fecha"}}),
+				    TipoDate = Table.TransformColumnTypes(ColumnaRenombrada,{{"Fecha", type date}}),
+				    StartDate = #"FechaInicioCalendario"[FechaArchivoDeuda],
+				    Today = #"FechaFinVentas"[FechaFinVenta],
+				    Length = 1 + Duration.Days(Today - StartDate),
+				    Custom1 = TipoDate,
+				    Año = Table.AddColumn(Custom1, "Año", each Date.Year([Fecha]), Int64.Type),
+				    MesOrden = Table.AddColumn(Año, "MesOrden", each Date.Month([Fecha]), Int64.Type),
+				    MonthName = Table.AddColumn(MesOrden, "Month Name", each Date.MonthName([Fecha]), type text),
+				    MesNumero = Table.AddColumn(MonthName, "Fin Month", each Date.Month([Fecha]+#duration(184,0,0,0)), Int64.Type),
+				    MesNombreCorto = Table.AddColumn(MesNumero, "MesNombre", each Text.Start([Month Name], 3), type text),
+				    CapitalizedMesNombre = Table.TransformColumns(MesNombreCorto,{{"MesNombre", Text.Proper, type text}}),
+				 //   #"Inserted MesAñoOrden" = Table.AddColumn(#"Capitalized Each Word", "MesAñoOrden", each Text.Combine({Text.PadEnd(Text.From([Año], "es-CL"), 5, "-"), Text.PadStart(Text.From([MesOrden], "es-CL"), 2, "0")}), type text),
+				    MesAñoOrden = Table.AddColumn(CapitalizedMesNombre, "MesAñoOrden", each [Año] * 100 + [MesOrden],Int64.Type),
+				    MesAño = Table.AddColumn(MesAñoOrden, "MesAño", each [MesNombre]&" "& Number.ToText([Año]),type text),
+				    FindeMes = Table.AddColumn(MesAño, "FinMes", each Date.EndOfMonth([Fecha]), type date),
+				    AñoActual = Table.AddColumn(FindeMes, "AÑoActual", each if Date.Year([Fecha]) = Date.Year(DateTime.LocalNow()) then 1 else 0, Int64.Type)
+				in
+				    AñoActual
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

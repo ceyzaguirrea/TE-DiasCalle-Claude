@@ -1,0 +1,14 @@
+relationship 0ef851b6-c367-4f96-8216-47e8ce9820c6
+	fromColumn: DiasCalle.FechaArchivoDeuda
+	toColumn: Calendario.Fecha
+
+relationship 0e730d43-141e-4ab8-a3d3-9eba1aebe779
+	fromColumn: Ventas.FechaFinVenta
+	toColumn: Calendario.Fecha
+
+relationship 0b2b6218-6b2e-4a13-9f01-d01401a413c1
+	isActive: false
+	toCardinality: many
+	fromColumn: Calendario.FinMes
+	toColumn: Calendario2.FinMes
+

@@ -1,0 +1,71 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "ce250fdb06b02d997b4a",
+  "position": {
+    "x": 66.666666666666671,
+    "y": 111.66666666666667,
+    "z": 5000,
+    "height": 63.333333333333336,
+    "width": 1366.6666666666667,
+    "tabOrder": 5000
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DiasCalle"
+                    }
+                  },
+                  "Property": "Fecha Archivo Cobranza"
+                }
+              },
+              "queryRef": "DiasCalle.Fecha Archivo Cobranza",
+              "nativeQueryRef": "Fecha Archivo Cobranza"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "categoryLabels": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "25b84648c6ef7d9090f1",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DiasCalle"
+              }
+            },
+            "Property": "Fecha Archivo Cobranza"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
+  }
+}

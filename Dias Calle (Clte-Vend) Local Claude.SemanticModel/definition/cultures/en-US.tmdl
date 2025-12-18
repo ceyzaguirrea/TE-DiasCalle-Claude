@@ -1,0 +1,1855 @@
+cultureInfo en-US
+
+	linguisticMetadata =
+			{
+			  "Version": "3.5.0",
+			  "Language": "en-US",
+			  "Entities": {
+			    "dias_calle": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "DiasCalle"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "dias calle": {
+			            "State": "Generated",
+			            "Weight": 0.87
+			          }
+			        },
+			        {
+			          "DiasCalle": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.8613
+			          }
+			        }
+			      ]
+			    },
+			    "dias_calle.attribute": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "DiasCalle",
+			          "ConceptualProperty": "Attribute"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "attribute": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "trait": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.491
+			          }
+			        },
+			        {
+			          "aspect": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.491
+			          }
+			        },
+			        {
+			          "element": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.491
+			          }
+			        },
+			        {
+			          "property": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.491
+			          }
+			        },
+			        {
+			          "quality": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.476
+			          }
+			        },
+			        {
+			          "characteristic": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.476
+			          }
+			        },
+			        {
+			          "feature": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.476
+			          }
+			        },
+			        {
+			          "point": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.476
+			          }
+			        },
+			        {
+			          "power": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.476
+			          }
+			        },
+			        {
+			          "part": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.476
+			          }
+			        }
+			      ]
+			    },
+			    "dias_calle.fecha_archivo_deuda": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "DiasCalle",
+			          "ConceptualProperty": "FechaArchivoDeuda"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "fecha archivo deuda": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "FechaArchivoDeuda": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.99
+			          }
+			        },
+			        {
+			          "date": {
+			            "State": "Generated",
+			            "Weight": 0.7
+			          }
+			        }
+			      ],
+			      "SemanticType": "Time"
+			    },
+			    "dias_calle.dias_calle": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "DiasCalle",
+			          "ConceptualProperty": "DiasCalle"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "dias calle": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "DiasCalle": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.99
+			          }
+			        }
+			      ]
+			    },
+			    "dias_calle.llave": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "DiasCalle",
+			          "ConceptualProperty": "Llave"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "llave": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "dias_calle.deuda_periodo": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "DiasCalle",
+			          "ConceptualProperty": "DeudaPeriodo"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "deuda periodo": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "DeudaPeriodo": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.99
+			          }
+			        }
+			      ]
+			    },
+			    "dias_calle.ventas_periodo": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "DiasCalle",
+			          "ConceptualProperty": "VentasPeriodo"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "ventas periodo": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "venta periodo": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.78
+			          }
+			        },
+			        {
+			          "VentasPeriodo": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.99
+			          }
+			        }
+			      ]
+			    },
+			    "dias_calle.descripcion": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "DiasCalle",
+			          "ConceptualProperty": "Descripcion"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "descripcion": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "calendario": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Calendario"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "calendario": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "calendario.fecha": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Calendario",
+			          "ConceptualProperty": "Fecha"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "fecha": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "date": {
+			            "State": "Generated",
+			            "Weight": 0.7
+			          }
+			        }
+			      ],
+			      "SemanticType": "Time"
+			    },
+			    "calendario.año": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Calendario",
+			          "ConceptualProperty": "Año"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "año": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "calendario.mes_orden": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Calendario",
+			          "ConceptualProperty": "MesOrden"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "mes orden": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "me orden": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.78
+			          }
+			        },
+			        {
+			          "MesOrden": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.99
+			          }
+			        }
+			      ]
+			    },
+			    "calendario.month_name": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Calendario",
+			          "ConceptualProperty": "Month Name"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "month name": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "month nickname": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.727
+			          }
+			        },
+			        {
+			          "month title": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.727
+			          }
+			        },
+			        {
+			          "month label": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.727
+			          }
+			        },
+			        {
+			          "month tag": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.727
+			          }
+			        },
+			        {
+			          "mth name": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.6
+			          }
+			        }
+			      ]
+			    },
+			    "calendario.fin_month": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Calendario",
+			          "ConceptualProperty": "Fin Month"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "fin month": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "fin mth": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.75
+			          }
+			        }
+			      ]
+			    },
+			    "calendario.mes_nombre": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Calendario",
+			          "ConceptualProperty": "MesNombre"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "mes nombre": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "me nombre": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.78
+			          }
+			        },
+			        {
+			          "MesNombre": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.99
+			          }
+			        }
+			      ]
+			    },
+			    "calendario.mes_año_orden": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Calendario",
+			          "ConceptualProperty": "MesAñoOrden"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "mes año orden": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "me año orden": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.78
+			          }
+			        },
+			        {
+			          "MesAñoOrden": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.99
+			          }
+			        }
+			      ]
+			    },
+			    "calendario.mes_año": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Calendario",
+			          "ConceptualProperty": "MesAño"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "mes año": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "me año": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.78
+			          }
+			        },
+			        {
+			          "MesAño": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.99
+			          }
+			        }
+			      ]
+			    },
+			    "calendario.fin_me": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Calendario",
+			          "ConceptualProperty": "FinMes"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "fin me": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "FinMes": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.99
+			          }
+			        },
+			        {
+			          "date": {
+			            "State": "Generated",
+			            "Weight": 0.7
+			          }
+			        },
+			        {
+			          "appendage me": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.5
+			          }
+			        },
+			        {
+			          "limb me": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.5
+			          }
+			        },
+			        {
+			          "organ me": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.5
+			          }
+			        },
+			        {
+			          "member me": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.5
+			          }
+			        },
+			        {
+			          "flipper me": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.485
+			          }
+			        },
+			        {
+			          "paddle me": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.485
+			          }
+			        },
+			        {
+			          "projection me": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.475
+			          }
+			        },
+			        {
+			          "propeller me": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.475
+			          }
+			        },
+			        {
+			          "rudder me": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.475
+			          }
+			        },
+			        {
+			          "stabilizer me": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.461
+			          }
+			        }
+			      ],
+			      "SemanticType": "Time"
+			    },
+			    "calendario.A_ño_actual": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Calendario",
+			          "ConceptualProperty": "AÑoActual"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "A ño actual": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "AÑoActual": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.99
+			          }
+			        },
+			        {
+			          "a ño real": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.739
+			          }
+			        },
+			        {
+			          "a ño existent": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.739
+			          }
+			        },
+			        {
+			          "a ño tangible": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.739
+			          }
+			        }
+			      ]
+			    },
+			    "calendario_2": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Calendario2"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "calendario 2": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "Calendario2": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.99
+			          }
+			        }
+			      ]
+			    },
+			    "calendario_2.año": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Calendario2",
+			          "ConceptualProperty": "Año"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "año": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "calendario_2.finde_mes_L_lave": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Calendario2",
+			          "ConceptualProperty": "FindeMesLLave"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "finde mes L lave": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "finde me L lave": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.78
+			          }
+			        },
+			        {
+			          "FindeMesLLave": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.99
+			          }
+			        }
+			      ]
+			    },
+			    "calendario_2.fin_me": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Calendario2",
+			          "ConceptualProperty": "FinMes"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "fin me": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "FinMes": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.99
+			          }
+			        },
+			        {
+			          "date": {
+			            "State": "Generated",
+			            "Weight": 0.7
+			          }
+			        },
+			        {
+			          "appendage me": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.5
+			          }
+			        },
+			        {
+			          "limb me": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.5
+			          }
+			        },
+			        {
+			          "organ me": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.5
+			          }
+			        },
+			        {
+			          "member me": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.5
+			          }
+			        },
+			        {
+			          "flipper me": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.485
+			          }
+			        },
+			        {
+			          "paddle me": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.485
+			          }
+			        },
+			        {
+			          "projection me": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.475
+			          }
+			        },
+			        {
+			          "propeller me": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.475
+			          }
+			        },
+			        {
+			          "rudder me": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.475
+			          }
+			        },
+			        {
+			          "stabilizer me": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.461
+			          }
+			        }
+			      ],
+			      "SemanticType": "Time"
+			    },
+			    "calendario_2.index": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Calendario2",
+			          "ConceptualProperty": "Index"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "index": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "directory": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.476
+			          }
+			        },
+			        {
+			          "catalogue": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.476
+			          }
+			        },
+			        {
+			          "catalog": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.476
+			          }
+			        },
+			        {
+			          "guide": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.476
+			          }
+			        },
+			        {
+			          "file": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.476
+			          }
+			        },
+			        {
+			          "key": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.476
+			          }
+			        },
+			        {
+			          "manifestation": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.466
+			          }
+			        },
+			        {
+			          "pointer": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.466
+			          }
+			        },
+			        {
+			          "indication": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.466
+			          }
+			        },
+			        {
+			          "indicator": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.452
+			          }
+			        }
+			      ]
+			    },
+			    "deudas.deuda_y_ventas_ultimos_6_meses": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Deudas",
+			          "ConceptualProperty": "Deuda y Ventas ultimos 6 Meses"
+			        }
+			      },
+			      "State": "Generated"
+			    }
+			  },
+			  "Relationships": {
+			    "dias_calle_is_expensive": {
+			      "Binding": {
+			        "ConceptualEntity": "DiasCalle"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "dias_calle": {
+			          "Target": {
+			            "Entity": "dias_calle"
+			          }
+			        },
+			        "dias_calle.deuda_periodo": {
+			          "Target": {
+			            "Entity": "dias_calle.deuda_periodo"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Adjective": {
+			            "Subject": {
+			              "Role": "dias_calle"
+			            },
+			            "Adjectives": [
+			              {
+			                "expensive": {
+			                  "State": "Generated"
+			                }
+			              }
+			            ],
+			            "Antonyms": [
+			              {
+			                "cheap": {
+			                  "State": "Generated"
+			                }
+			              }
+			            ],
+			            "Measurement": {
+			              "Role": "dias_calle.deuda_periodo"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "deuda_periodo_indicates_how_expensive_dias_calles_are"
+			        },
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "dias_calle"
+			            },
+			            "Object": {
+			              "Role": "dias_calle.deuda_periodo"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "dias_calles_have_deuda_periodos"
+			        }
+			      ]
+			    },
+			    "dias_calle_is_expensive1": {
+			      "Binding": {
+			        "ConceptualEntity": "DiasCalle"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "dias_calle": {
+			          "Target": {
+			            "Entity": "dias_calle"
+			          }
+			        },
+			        "dias_calle.ventas_periodo": {
+			          "Target": {
+			            "Entity": "dias_calle.ventas_periodo"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Adjective": {
+			            "Subject": {
+			              "Role": "dias_calle"
+			            },
+			            "Adjectives": [
+			              {
+			                "expensive": {
+			                  "State": "Generated"
+			                }
+			              }
+			            ],
+			            "Antonyms": [
+			              {
+			                "cheap": {
+			                  "State": "Generated"
+			                }
+			              }
+			            ],
+			            "Measurement": {
+			              "Role": "dias_calle.ventas_periodo"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "ventas_periodo_indicates_how_expensive_dias_calles_are"
+			        },
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "dias_calle"
+			            },
+			            "Object": {
+			              "Role": "dias_calle.ventas_periodo"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "dias_calles_have_ventas_periodos"
+			        }
+			      ]
+			    },
+			    "dias_calle_has_attribute": {
+			      "Binding": {
+			        "ConceptualEntity": "DiasCalle"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "dias_calle": {
+			          "Target": {
+			            "Entity": "dias_calle"
+			          }
+			        },
+			        "dias_calle.attribute": {
+			          "Target": {
+			            "Entity": "dias_calle.attribute"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "dias_calle"
+			            },
+			            "Object": {
+			              "Role": "dias_calle.attribute"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "dias_calles_have_attributes"
+			        }
+			      ]
+			    },
+			    "dias_calle_has_fecha_archivo_deuda": {
+			      "Binding": {
+			        "ConceptualEntity": "DiasCalle"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "dias_calle": {
+			          "Target": {
+			            "Entity": "dias_calle"
+			          }
+			        },
+			        "dias_calle.fecha_archivo_deuda": {
+			          "Target": {
+			            "Entity": "dias_calle.fecha_archivo_deuda"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "dias_calle"
+			            },
+			            "Object": {
+			              "Role": "dias_calle.fecha_archivo_deuda"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "dias_calles_have_fecha_archivo_deudas"
+			        }
+			      ]
+			    },
+			    "dias_calle_has_dias_calle": {
+			      "Binding": {
+			        "ConceptualEntity": "DiasCalle"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "dias_calle": {
+			          "Target": {
+			            "Entity": "dias_calle"
+			          }
+			        },
+			        "dias_calle.dias_calle": {
+			          "Target": {
+			            "Entity": "dias_calle.dias_calle"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "dias_calle"
+			            },
+			            "Object": {
+			              "Role": "dias_calle.dias_calle"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "dias_calles_have_dias_calles"
+			        }
+			      ]
+			    },
+			    "dias_calle_has_llave": {
+			      "Binding": {
+			        "ConceptualEntity": "DiasCalle"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "dias_calle": {
+			          "Target": {
+			            "Entity": "dias_calle"
+			          }
+			        },
+			        "dias_calle.llave": {
+			          "Target": {
+			            "Entity": "dias_calle.llave"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "dias_calle"
+			            },
+			            "Object": {
+			              "Role": "dias_calle.llave"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "dias_calles_have_llaves"
+			        }
+			      ]
+			    },
+			    "dias_calle_has_descripcion": {
+			      "Binding": {
+			        "ConceptualEntity": "DiasCalle"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "dias_calle": {
+			          "Target": {
+			            "Entity": "dias_calle"
+			          }
+			        },
+			        "dias_calle.descripcion": {
+			          "Target": {
+			            "Entity": "dias_calle.descripcion"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "dias_calle"
+			            },
+			            "Object": {
+			              "Role": "dias_calle.descripcion"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "dias_calles_have_descripcions"
+			        }
+			      ]
+			    },
+			    "calendario_has_fecha": {
+			      "Binding": {
+			        "ConceptualEntity": "Calendario"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "calendario": {
+			          "Target": {
+			            "Entity": "calendario"
+			          }
+			        },
+			        "calendario.fecha": {
+			          "Target": {
+			            "Entity": "calendario.fecha"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "calendario"
+			            },
+			            "Object": {
+			              "Role": "calendario.fecha"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "calendarios_have_fechas"
+			        }
+			      ]
+			    },
+			    "calendario_has_año": {
+			      "Binding": {
+			        "ConceptualEntity": "Calendario"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "calendario": {
+			          "Target": {
+			            "Entity": "calendario"
+			          }
+			        },
+			        "calendario.año": {
+			          "Target": {
+			            "Entity": "calendario.año"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "calendario"
+			            },
+			            "Object": {
+			              "Role": "calendario.año"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "calendarios_have_años"
+			        }
+			      ]
+			    },
+			    "calendario_has_mes_orden": {
+			      "Binding": {
+			        "ConceptualEntity": "Calendario"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "calendario": {
+			          "Target": {
+			            "Entity": "calendario"
+			          }
+			        },
+			        "calendario.mes_orden": {
+			          "Target": {
+			            "Entity": "calendario.mes_orden"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "calendario"
+			            },
+			            "Object": {
+			              "Role": "calendario.mes_orden"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "calendarios_have_mes_ordens"
+			        }
+			      ]
+			    },
+			    "calendario_has_month_name": {
+			      "Binding": {
+			        "ConceptualEntity": "Calendario"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "calendario": {
+			          "Target": {
+			            "Entity": "calendario"
+			          }
+			        },
+			        "calendario.month_name": {
+			          "Target": {
+			            "Entity": "calendario.month_name"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "calendario"
+			            },
+			            "Object": {
+			              "Role": "calendario.month_name"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "calendarios_have_month_names"
+			        }
+			      ]
+			    },
+			    "calendario_has_fin_month": {
+			      "Binding": {
+			        "ConceptualEntity": "Calendario"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "calendario": {
+			          "Target": {
+			            "Entity": "calendario"
+			          }
+			        },
+			        "calendario.fin_month": {
+			          "Target": {
+			            "Entity": "calendario.fin_month"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "calendario"
+			            },
+			            "Object": {
+			              "Role": "calendario.fin_month"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "calendarios_have_fin_months"
+			        }
+			      ]
+			    },
+			    "calendario_has_mes_nombre": {
+			      "Binding": {
+			        "ConceptualEntity": "Calendario"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "calendario": {
+			          "Target": {
+			            "Entity": "calendario"
+			          }
+			        },
+			        "calendario.mes_nombre": {
+			          "Target": {
+			            "Entity": "calendario.mes_nombre"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "calendario"
+			            },
+			            "Object": {
+			              "Role": "calendario.mes_nombre"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "calendarios_have_mes_nombres"
+			        }
+			      ]
+			    },
+			    "calendario_has_mes_año_orden": {
+			      "Binding": {
+			        "ConceptualEntity": "Calendario"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "calendario": {
+			          "Target": {
+			            "Entity": "calendario"
+			          }
+			        },
+			        "calendario.mes_año_orden": {
+			          "Target": {
+			            "Entity": "calendario.mes_año_orden"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "calendario"
+			            },
+			            "Object": {
+			              "Role": "calendario.mes_año_orden"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "calendarios_have_mes_año_ordens"
+			        }
+			      ]
+			    },
+			    "calendario_has_mes_año": {
+			      "Binding": {
+			        "ConceptualEntity": "Calendario"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "calendario": {
+			          "Target": {
+			            "Entity": "calendario"
+			          }
+			        },
+			        "calendario.mes_año": {
+			          "Target": {
+			            "Entity": "calendario.mes_año"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "calendario"
+			            },
+			            "Object": {
+			              "Role": "calendario.mes_año"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "calendarios_have_mes_años"
+			        }
+			      ]
+			    },
+			    "calendario_has_fin_me": {
+			      "Binding": {
+			        "ConceptualEntity": "Calendario"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "calendario": {
+			          "Target": {
+			            "Entity": "calendario"
+			          }
+			        },
+			        "calendario.fin_me": {
+			          "Target": {
+			            "Entity": "calendario.fin_me"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "calendario"
+			            },
+			            "Object": {
+			              "Role": "calendario.fin_me"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "calendarios_have_fin_me"
+			        }
+			      ]
+			    },
+			    "calendario_has_A_ño_actual": {
+			      "Binding": {
+			        "ConceptualEntity": "Calendario"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "calendario": {
+			          "Target": {
+			            "Entity": "calendario"
+			          }
+			        },
+			        "calendario.A_ño_actual": {
+			          "Target": {
+			            "Entity": "calendario.A_ño_actual"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "calendario"
+			            },
+			            "Object": {
+			              "Role": "calendario.A_ño_actual"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "calendarios_have_A_ño_actual"
+			        }
+			      ]
+			    },
+			    "calendario_2_has_año": {
+			      "Binding": {
+			        "ConceptualEntity": "Calendario2"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "calendario_2": {
+			          "Target": {
+			            "Entity": "calendario_2"
+			          }
+			        },
+			        "calendario_2.año": {
+			          "Target": {
+			            "Entity": "calendario_2.año"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "calendario_2"
+			            },
+			            "Object": {
+			              "Role": "calendario_2.año"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "calendario_2_have_años"
+			        }
+			      ]
+			    },
+			    "calendario_2_has_finde_mes_L_lave": {
+			      "Binding": {
+			        "ConceptualEntity": "Calendario2"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "calendario_2": {
+			          "Target": {
+			            "Entity": "calendario_2"
+			          }
+			        },
+			        "calendario_2.finde_mes_L_lave": {
+			          "Target": {
+			            "Entity": "calendario_2.finde_mes_L_lave"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "calendario_2"
+			            },
+			            "Object": {
+			              "Role": "calendario_2.finde_mes_L_lave"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "calendario_2_have_finde_mes_L_lave"
+			        }
+			      ]
+			    },
+			    "calendario_2_has_fin_me": {
+			      "Binding": {
+			        "ConceptualEntity": "Calendario2"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "calendario_2": {
+			          "Target": {
+			            "Entity": "calendario_2"
+			          }
+			        },
+			        "calendario_2.fin_me": {
+			          "Target": {
+			            "Entity": "calendario_2.fin_me"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "calendario_2"
+			            },
+			            "Object": {
+			              "Role": "calendario_2.fin_me"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "calendario_2_have_fin_me"
+			        }
+			      ]
+			    },
+			    "calendario_2_has_index": {
+			      "Binding": {
+			        "ConceptualEntity": "Calendario2"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "calendario_2": {
+			          "Target": {
+			            "Entity": "calendario_2"
+			          }
+			        },
+			        "calendario_2.index": {
+			          "Target": {
+			            "Entity": "calendario_2.index"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "calendario_2"
+			            },
+			            "Object": {
+			              "Role": "calendario_2.index"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "calendario_2_have_indices"
+			        }
+			      ]
+			    },
+			    "dias_calle_has_calendario": {
+			      "Binding": {
+			        "ConceptualEntity": "DiasCalle"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "dias_calle": {
+			          "Target": {
+			            "Entity": "dias_calle"
+			          }
+			        },
+			        "calendario": {
+			          "Target": {
+			            "Entity": "calendario"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "dias_calle"
+			            },
+			            "Object": {
+			              "Role": "calendario"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "dias_calles_have_calendarios"
+			        },
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "calendario"
+			            },
+			            "Object": {
+			              "Role": "dias_calle"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "calendarios_have_dias_calles"
+			        }
+			      ]
+			    }
+			  }
+			}
+		contentType: json
+

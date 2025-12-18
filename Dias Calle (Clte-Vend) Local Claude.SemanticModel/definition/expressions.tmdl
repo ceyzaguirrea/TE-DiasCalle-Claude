@@ -1,0 +1,832 @@
+/// Esta tabla contiene las deudas de los clientes agrupadas por la fecha del archivo de cobranza
+expression BaseDeuda =
+		let
+		    Source = Excel.Workbook(File.Contents("D:\Clientes\Total Energies\5 MIgracion Power BI\3 PBI DiasCalle\Archivos Cobranza\01-2024.xlsx"), null, true),
+		    Hoja1_Sheet = Source{[Item="Hoja1",Kind="Sheet"]}[Data],
+		    #"Promoted Headers" = Table.PromoteHeaders(Hoja1_Sheet, [PromoteAllScalars=true]),
+		    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Account", Int64.Type}, {"Name 1", type text}, {"Assignment", type text}, {"DocumentNo", Int64.Type}, {"Reference", type text}, {"Type", type text}, {"G/L", Int64.Type}, {"SG", type text}, {"DD", type text}, {"Clrng doc.", Int64.Type}, {"Text", type text}, {"Inv. ref.", Int64.Type}, {"Item", Int64.Type}, {"Sales Doc.", type text}, {"Bill.Doc.", Int64.Type}, {"PM", type text}, {"PayT", type text}, {"Doc..Date", type date}, {"Pstng Date", type date}, {"Net due dt", type date}, {"Amt in loc.cur.", Int64.Type}, {"LCurr", type text}, {"Amount in DC", Int64.Type}, {"Curr.", type text}, {"Arrers", Int64.Type}, {"Arrear", Int64.Type}, {"Clearing", type date}}),
+		    #"Grouped Rows" = Table.Group(#"Changed Type", {"Account"}, {{"Deuda", each List.Sum([#"Amt in loc.cur."]), type nullable number}})
+		in
+		    #"Grouped Rows"
+	lineageTag: 1e89046f-f712-4f35-a3c4-d3d22c773e84
+	queryGroup: StaggingBase
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression MesesdeVenta = 6 meta [IsParameterQuery=true, Type="Number", IsParameterQueryRequired=true]
+	lineageTag: fcce433e-d586-45b0-828f-f4e60a464efd
+	queryGroup: Parametros
+
+	annotation PBI_ResultType = Number
+
+expression ServerName = "localhost\sqlexpress" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: cf0746b6-49f0-44e4-9314-e42b9d713a7c
+	queryGroup: Parametros
+
+	annotation PBI_ResultType = Text
+
+	annotation PBI_NavigationStepName = Navigation
+
+expression DataBaseName = "totalenergies" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 0479b96d-9d38-4399-b3c0-60f213e48d8f
+	queryGroup: Parametros
+
+	annotation PBI_ResultType = Text
+
+	annotation PBI_NavigationStepName = Navigation
+
+/// A partir de la fecha de los archivos de cobranza, se obtiene la fecha correspondiente a la fecha de inicio de las ventas de 6 meses atrás, según el parámetro "MesesdeVenta"
+expression PeriodoDeudayVentas =
+		let
+		    Source = Folder.Files("D:\Clientes\Total Energies\5 MIgracion Power BI\3 PBI DiasCalle\Archivos Cobranza\"),
+		    #"Filtered Rows" = Table.SelectRows(Source, each ([Name] = "01-2024.xlsx")),
+		    #"Removed Other Columns" = Table.SelectColumns(#"Filtered Rows",{"Date modified"}),
+		    #"Changed Type" = Table.TransformColumnTypes(#"Removed Other Columns",{{"Date modified", type date}}),
+		    RenamedColumns = Table.RenameColumns(#"Changed Type",{{"Date modified", "FechaArchivoDeuda"}}),
+		    AddedFechaInicioVenta = Table.AddColumn(RenamedColumns, "FechaInicioVenta", each #date(Date.Year(Date.From(Date.AddMonths([FechaArchivoDeuda], - (MesesdeVenta-1)))), Date.Month(Date.From(Date.AddMonths([FechaArchivoDeuda], -(MesesdeVenta-1)))), 1), type date),
+		    AddedKey = Table.AddColumn(AddedFechaInicioVenta, "Key", each 0, Int64.Type)
+		in
+		    AddedKey
+	lineageTag: 147e9dd7-42af-4abd-b55a-18d3f64b7484
+	queryGroup: StaggingBase
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression ExcluirVendedores =
+		let
+		    Source = Excel.Workbook(File.Contents("D:\Clientes\Total Energies\1 Cobranza\2 PBI Cobranza\ExcluirEjecutivos.xlsx"), null, true),
+		    Hoja1_Sheet = Source{[Item="Hoja1",Kind="Sheet"]}[Data],
+		    #"Changed Type" = Table.TransformColumnTypes(Hoja1_Sheet,{{"Column1", type text}, {"Column2", type text}, {"Column3", type text}}),
+		    #"Promoted Headers" = Table.PromoteHeaders(#"Changed Type", [PromoteAllScalars=true]),
+		    #"Changed Type1" = Table.TransformColumnTypes(#"Promoted Headers",{{"# vend", type text}, {"nombre ", type text}, {"Cobrable", type text}}),
+		    #"Renamed Columns" = Table.RenameColumns(#"Changed Type1",{{"# vend", "Excluir"}}),
+		    #"Removed Other Columns" = Table.SelectColumns(#"Renamed Columns",{"Excluir"})
+		in
+		    #"Removed Other Columns"
+	lineageTag: d97510c0-a601-4720-b9d3-161407783c26
+	queryGroup: StaggingBase
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression FechaArchivoCtasxCobrar =
+		let
+		    Source = PeriodoDeudayVentas,
+		    RemovedOtherColumns = Table.SelectColumns(Source,{"FechaInicioVenta"}),
+		    FilteredRows = Table.SelectRows(RemovedOtherColumns, let earliest = List.Min(RemovedOtherColumns[FechaInicioVenta]) in each [FechaInicioVenta] = earliest),
+		    Record = FilteredRows{0}
+		in
+		    Record
+	lineageTag: 251f6902-047b-41b0-ae9c-9610dac46c6f
+	queryGroup: Parametros
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Record
+
+/// Se traen las ventas desde la fecha mínima del archivo de cobranza hasta 6 meses atrás, de acuerdo al parámetro FechaArchivoCtasxCobrar
+expression BaseVentas =
+		let
+		    Source = Sql.Database(ServerName, DataBaseName),
+		    dbo_Ventas = Source{[Schema="dbo",Item="Venta"]}[Data],
+		    #"Changed Type" = Table.TransformColumnTypes(dbo_Ventas,{{"Turnover_sales_SD", Int64.Type}, {"Discounts_on_invoice", Int64.Type}, {"Discount__FI_", Int64.Type}, {"Loc__value_field_03", Int64.Type}}),
+		    #"Added Custom" = Table.AddColumn(#"Changed Type", "Facturado", each [Turnover_sales_SD] + [Discounts_on_invoice] + [Discount__FI_] + [Loc__value_field_03], Int64.Type),
+		    RemovedOtherColumns = Table.SelectColumns(#"Added Custom",{"Codigo_Customer", "Codigo_Vendedor", "Codigo_CECO", "Pstg_date", "Facturado"}),
+		    MergedCecosSinIVA = Table.NestedJoin(RemovedOtherColumns, {"Codigo_CECO"}, CecosSinIVA, {"CECOS"}, "CecosSinIVA", JoinKind.LeftOuter),
+		    ExpandedCecosSinIVA = Table.ExpandTableColumn(MergedCecosSinIVA, "CecosSinIVA", {"CECOS"}, {"CECOS"}),
+		    AddedCustom = Table.AddColumn(ExpandedCecosSinIVA, "Custom", each if [CECOS] = null then  Number.Round([Facturado]*1.19) else [Facturado]),
+		    RemovedColumns = Table.RemoveColumns(AddedCustom,{"Codigo_CECO", "CECOS", "Facturado"}),
+		    RenamedColumns1 = Table.RenameColumns(RemovedColumns,{{"Custom", "Facturado"}}),
+		    ChangedType = Table.TransformColumnTypes(RenamedColumns1,{{"Codigo_Customer", Int64.Type}, {"Facturado", Int64.Type}, {"Pstg_date", type date}}),
+		    FilteredRows1 = Table.SelectRows(ChangedType, each [Pstg_date] >= FechaArchivoCtasxCobrar[FechaInicioVenta]),
+		    InsertedEndofMonth = Table.AddColumn(FilteredRows1, "End of Month", each Date.EndOfMonth([Pstg_date]), type date),
+		    GroupedRows = Table.Group(InsertedEndofMonth, {"Codigo_Customer", "End of Month"}, {{"Facturado", each List.Sum([Facturado]), type nullable number}}),
+		    RenamedColumns = Table.RenameColumns(GroupedRows,{{"Codigo_Customer", "Account"}, {"End of Month", "FechaFinVenta"}, {"Facturado", "Ventas"}}),
+		    ChangedType1 = Table.TransformColumnTypes(RenamedColumns,{{"Ventas", Int64.Type}})
+		in
+		    ChangedType1
+	lineageTag: 897a9eee-3e37-486b-a654-00e32c5ddd9d
+	queryGroup: StaggingBase
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression fxRunningTotal = ```
+		// fxRunningTotal
+		let
+		    Source = (RT_Name as text, MyTable as table, RT_ColumnName as text) => 
+		// Este proceso está en el video https://www.youtube.com/watch?v=ShnWkb6e0jE
+		let
+		    Source = MyTable,
+		    BuffValues = List.Buffer(Table.Column( MyTable, RT_ColumnName)),
+		    RunningTotal = List.Generate ( () => [ RT = BuffValues{0}, RowIndex = 0],
+		    each [RowIndex] < List.Count(BuffValues),
+		    each [ RT = List.Sum ( { [RT], BuffValues{[RowIndex] + 1}}),
+		    RowIndex = [RowIndex] + 1],
+		    each [RT]),
+		    Source_RT = Table.FromColumns(
+		   Table.ToColumns(Source)
+		   & {Value.ReplaceType(RunningTotal, type {Int64.Type})},
+		   Table.ColumnNames (Source) & {RT_Name})
+		in
+		    Source_RT
+		in
+		    Source
+		```
+	lineageTag: 7c0c69b9-8fe2-43c2-a629-20460ad5cac0
+	queryGroup: Parametros
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Function
+
+expression Vendedores =
+		let
+		    Source = SharePoint.Files(SP_ProyectosTotalEnergiesFacility, [ApiVersion = 15]),
+		    FilteredRows0 = Table.SelectRows(Source, each ([Folder Path] = "https://totalworkplace.sharepoint.com/sites/ProyectosTotalEnergies-Facility/Documents partages/Archivos_Maestros_INTERNOS/COD_VENDEDOR/")),
+		    FilteredRows1 = Table.SelectRows(FilteredRows0, each not Text.StartsWith([Name], "~") and Text.Contains([Extension], "xls",Comparer.OrdinalIgnoreCase) and [Attributes]?[Hidden]? <> true)[[Content],[Name]],
+		    BinaryToTable = Table.TransformColumns(FilteredRows1, {"Content", each Excel.Workbook(_,true) }),
+		    SelectTable = Table.AddColumn(BinaryToTable, "Custom", each Table.SelectRows([Content], each ([Kind]="Sheet"))),
+		    RemovedColumns0 = Table.RemoveColumns(SelectTable,{"Content", "Name"}),
+		    DatosdeTabla = Table.ExpandTableColumn(RemovedColumns0, "Custom", {"Data"}, {"Data"}),
+		    ExpandirDatos = Table.Combine(DatosdeTabla[Data]),
+		    PromotedHeaders = Table.PromoteHeaders(ExpandirDatos, [PromoteAllScalars=true]),
+		    ChangedType0 = Table.TransformColumnTypes(PromotedHeaders,{{"# vend", type text}, {"nombre ", type text}, {"Correo", type text}, {"Segmento", type text}, {"Sub Segmento", type text}, {"Sub Segmento Consolidado", type text}, {"Region", type text}, {"JEFE DIRECTO", type text}, {"SUB Gerencia  B2C", type text}, {"GCIA LUBRICANTES  ", type text}, {"DIRECTOR GENERAL", type text}, {"AREA COMERCIAL", type text}, {"PROFIT CENTER", type text}, {"Kam", type text}}),
+		    RemovedColumns = Table.RemoveColumns(ChangedType0,{"PROFIT CENTER", "Correo", "DIRECTOR GENERAL","Kam"}),
+		    FilteredRows = Table.SelectRows(RemovedColumns, each [#"# vend"] <> null and not Text.Contains([Segmento], "Oficina") and not Text.Contains([Segmento], "SAC") and [Segmento] <> "Blending a Terceros" and [Segmento] <> "Intercompany" and [Segmento] <> "Inactivos"),
+		    RenamedColumns = Table.RenameColumns(FilteredRows,{{"# vend", "CodVendedor"}, {"nombre ", "NombreVendedor"}, {"Sub Segmento", "SubSegmento"}, {"Sub Segmento Consolidado", "SubSegmentoConsolidado"}, {"JEFE DIRECTO", "JefeDirecto"}, {"SUB Gerencia  B2C", "SubGciaB2C"}, {"GCIA LUBRICANTES  ", "GciaLubricantes"}, {"AREA COMERCIAL", "AreaComercial"}}),
+		    ChangedType = Table.TransformColumnTypes(RenamedColumns,{{"CodVendedor", type text}, {"NombreVendedor", type text}, {"Segmento", type text}, {"SubSegmento", type text}, {"SubSegmentoConsolidado", type text}, {"Region", type text}, {"JefeDirecto", type text}, {"SubGciaB2C", type text}, {"GciaLubricantes", type text}, {"AreaComercial", type text}}),
+		    AddedCompany = Table.AddColumn(ChangedType, "Company", each "Total Energy", type text),
+		    FiltradoVendedores = Table.SelectRows(AddedCompany, each not List.Contains(Table.ToList(ExcluirVendedores),[CodVendedor])),
+		    GciaLubricantesEspacio = Table.AddColumn(FiltradoVendedores, "Custom", each [GciaLubricantes]&" ", type text),
+		    RemovedColumns1 = Table.RemoveColumns(GciaLubricantesEspacio,{"GciaLubricantes"}),
+		    RenamedColumns1 = Table.RenameColumns(RemovedColumns1,{{"Custom", "GciaLubricantes"}}),
+		    SubGciaB2CEspacio = Table.AddColumn(RenamedColumns1, "Custom", each [SubGciaB2C]&"  ", type text),
+		    RemovedColumns2 = Table.RemoveColumns(SubGciaB2CEspacio,{"SubGciaB2C"}),
+		    RenamedColumns2 = Table.RenameColumns(RemovedColumns2,{{"Custom", "SubGciaB2C"}}),
+		    JefeDirectoEspacio = Table.AddColumn(RenamedColumns2, "Custom", each [JefeDirecto]&" ", type text),
+		    RemovedColumns3 = Table.RemoveColumns(JefeDirectoEspacio,{"JefeDirecto"}),
+		    RenamedColumns3 = Table.RenameColumns(RemovedColumns3,{{"Custom", "JefeDirecto"}}),
+		    SegmentoEspacio = Table.AddColumn(RenamedColumns3, "Custom", each [Segmento]&" ", type text),
+		    RemovedColumns4 = Table.RemoveColumns(SegmentoEspacio,{"Segmento"}),
+		    RenamedColumns4 = Table.RenameColumns(RemovedColumns4,{{"Custom", "Segmento"}}),
+		    SubSgmtoConsolidadoEspacio = Table.AddColumn(RenamedColumns4, "Custom", each [SubSegmentoConsolidado]&"  ", type text),
+		    RemovedColumns5 = Table.RemoveColumns(SubSgmtoConsolidadoEspacio,{"SubSegmentoConsolidado"}),
+		    RenamedColumns5 = Table.RenameColumns(RemovedColumns5,{{"Custom", "SubSegmentoConsolidado"}}),
+		    SubSegmentoEspacio = Table.AddColumn(RenamedColumns5, "Custom", each [SubSegmento]&"   ", type text),
+		    RemovedColumns6 = Table.RemoveColumns(SubSegmentoEspacio,{"SubSegmento"}),
+		    RenamedColumns6 = Table.RenameColumns(RemovedColumns6,{{"Custom", "SubSegmento"}}),
+		    VendedorEspacio = Table.AddColumn(RenamedColumns6, "Custom", each [NombreVendedor]&"  ", type text),
+		    RemovedColumns7 = Table.RemoveColumns(VendedorEspacio,{"NombreVendedor"}),
+		    RenamedColumns7 = Table.RenameColumns(RemovedColumns7,{{"Custom", "NombreVendedor"}}),
+		    CapitalizedAreaComercial = Table.TransformColumns(RenamedColumns7,{{"AreaComercial", Text.Proper, type text}})
+		in
+		    CapitalizedAreaComercial
+	lineageTag: aea48e8a-ef5c-4bf6-9ed7-a57ccef8d9e6
+	queryGroup: StaggingBase
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+/// Esta tabla se creó para adjuntar el nombre de cliente a la tabla Deudas
+expression Cliente =
+		let
+		    Source = ClienteVendedor,
+		    RemovedOtherColumns = Table.SelectColumns(Source,{"Cliente", "NombreCliente", "NombreVendedor"}),
+		    ChangedType = Table.TransformColumnTypes(RemovedOtherColumns,{{"Cliente", type text}})
+		in
+		    ChangedType
+	lineageTag: bbf5fad3-2191-4ddd-a540-e70e3a70de82
+	queryGroup: StaggingBase
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression CecosSinIVA =
+		let
+		    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i45WcvYxNDQ2NDQwMVKK1UHiGqNyTVC5pqhcM1SuOYJramhgaakUGwsA", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [CECOS = _t]),
+		    #"Changed Type" = Table.TransformColumnTypes(Source,{{"CECOS", type text}})
+		in
+		    #"Changed Type"
+	lineageTag: e5ddf354-b222-4791-96f9-b3455d99ce4a
+	queryGroup: StaggingBase
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression FechaInicioCalendario =
+		let
+		    Source = PeriodoDeudayVentas,
+		    RemovedOtherColumns = Table.SelectColumns(Source,{"FechaInicioVenta"}),
+		    FilteredRows = Table.SelectRows(RemovedOtherColumns, let earliest = List.Min(RemovedOtherColumns[FechaInicioVenta]) in each [FechaInicioVenta] = earliest),
+		    #"Inserted Start of Month" = Table.AddColumn(FilteredRows, "Start of Month", each Date.StartOfMonth([FechaInicioVenta]), type date),
+		    #"Removed Columns" = Table.RemoveColumns(#"Inserted Start of Month",{"FechaInicioVenta"}),
+		    #"Renamed Columns" = Table.RenameColumns(#"Removed Columns",{{"Start of Month", "FechaArchivoDeuda"}}),
+		    Record = #"Renamed Columns"{0}
+		in
+		    Record
+	lineageTag: a2abbe20-9803-4641-b192-0f805315adc8
+	queryGroup: Parametros
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Record
+
+/// Esta tabla contiene todos los clientes activos de acuerdo la los Vendedores que no deben ser excluidos
+expression ClienteVendedor = ```
+		let
+		    Source = Sql.Database(ServerName, DataBaseName),
+		    dbo_Cliente = Source{[Schema="dbo",Item="ZC75"]}[Data],
+		    RemovedOtherColumns = Table.SelectColumns(dbo_Cliente,{"Customer", "Name1", "SGrp"}),
+		    ChangedType1 = Table.TransformColumnTypes(RemovedOtherColumns,{{"Customer", type text}}),
+		    
+		    // Filtrar vendedores excluidos
+		    ExluyeVendedores = Table.SelectRows(ChangedType1, each not List.Contains(Table.ToList(ExcluirVendedores),[SGrp])),
+		    
+		    // OPTIMIZACIÓN: Cambiar LeftOuter + Filter NULL por Inner Join
+		    MergedClientesconDeuda = Table.NestedJoin(ExluyeVendedores, {"Customer"}, ClientesconDeuda, {"Account"}, "ClientesconDeuda", JoinKind.Inner),
+		    
+		    // Ya no necesitamos expandir ni filtrar nulls, Inner Join solo trae matches
+		    RemovedColumns = Table.RemoveColumns(MergedClientesconDeuda,{"ClientesconDeuda"}),
+		    
+		    // Cambiar tipo a Int64
+		    ChangedType = Table.TransformColumnTypes(RemovedColumns,{{"Customer", Int64.Type}}),
+		    
+		    // Renombrar columnas
+		    RenamedColumns = Table.RenameColumns(ChangedType,{{"Customer", "Account"}, {"SGrp", "CodVendedor"}, {"Name1", "NombreCliente"}}),
+		    
+		    // Merge con Vendedores
+		    MergedVendedores = Table.NestedJoin(RenamedColumns, {"CodVendedor"}, Vendedores, {"CodVendedor"}, "Vendedores", JoinKind.LeftOuter),
+		    ExpandedVendedores = Table.ExpandTableColumn(MergedVendedores, "Vendedores", {"NombreVendedor"}, {"NombreVendedor1"}),
+		    
+		    // Añadir NombreVendedor con fallback
+		    AddedCustom = Table.AddColumn(ExpandedVendedores, "NombreVendedor", each if [NombreVendedor1] = null then [CodVendedor] else [NombreVendedor1], type text),
+		    RemovedColumns2 = Table.RemoveColumns(AddedCustom,{"NombreVendedor1"}),
+		    
+		    // Renombrar columnas finales
+		    RenamedColumns2 = Table.RenameColumns(RemovedColumns2,{{"Account", "Cliente"}, {"CodVendedor", "Vendedor"}})
+		in
+		    RenamedColumns2
+		```
+	lineageTag: 2ecd57ff-ba95-402e-884f-f54b4ab859c6
+	queryGroup: StaggingBase
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression Calendario2Paso =
+		let
+		    Source = Calendario,
+		    #"Removed Other Columns" = Table.SelectColumns(Source,{"Año", "FinMes"}),
+		    #"Removed Duplicates" = Table.Distinct(#"Removed Other Columns", {"FinMes"}),
+		    #"Added Custom" = Table.AddColumn(#"Removed Duplicates", "FindeMesLLave", each "Deuda", type text),
+		    #"Added Custom1" = Table.AddColumn(#"Added Custom", "Index", each 1, Int64.Type)
+		in
+		    #"Added Custom1"
+	lineageTag: f68b1cad-bcc8-4e18-bfe9-32b60ca031b9
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression Calendario2Paso2 =
+		let
+		    Source = Calendario,
+		    #"Removed Other Columns" = Table.SelectColumns(Source,{"Año", "FinMes"}),
+		    #"Removed Duplicates" = Table.Distinct(#"Removed Other Columns", {"FinMes"}),
+		    #"Added Custom" = Table.AddColumn(#"Removed Duplicates", "FindeMesLLave", each "Día Calle", type text),
+		    #"Added Custom1" = Table.AddColumn(#"Added Custom", "Index", each 1000, Int64.Type)
+		in
+		    #"Added Custom1"
+	lineageTag: 92044e2b-5dae-4298-80d3-d1c460fbaaaf
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression SP_ProyectosTotalEnergiesFacility = "https://totalworkplace.sharepoint.com/sites/ProyectosTotalEnergies-Facility" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 70dc6598-24a4-4dea-a281-10ea748503c9
+	queryGroup: Parametros
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Text
+
+expression SP_CobranzaTotalEnergies = "https://totalworkplace.sharepoint.com/sites/ProyectosTotalEnergies-Facility/Documents" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: de72a485-47e2-4d98-a819-1657a1c826cd
+	queryGroup: Parametros
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Text
+
+expression ClientesconDeuda =
+		let
+		    Source = BaseDeuda,
+		    RemovedOtherColumns = Table.SelectColumns(Source,{"Account"}),
+		    RemovedDuplicates = Table.Distinct(RemovedOtherColumns),
+		    ChangedType = Table.TransformColumnTypes(RemovedDuplicates,{{"Account", type text}})
+		in
+		    ChangedType
+	lineageTag: 5acf048a-7acd-4ed2-9bc5-ffcbec599275
+	queryGroup: StaggingBase
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression PeriodoVentas = ```
+		// Generar calendario de ventas a nivel de meses
+		// Desde el video https://www.youtube.com/watch?v=eqWLcCBxA08
+		let
+		    Source = FechaArchivoCtasxCobrar,
+		    FechaInicioVenta = Source[FechaInicioVenta],
+		    Custom1 = FechaFinVentas,
+		    FechaFinVenta = Custom1[FechaFinVenta],
+		    Custom2 = List.Generate(
+		    ()=> Source[FechaInicioVenta],
+		    each _ <= FechaFinVenta,
+		    each Date.AddMonths(_,1),
+		    each Date.EndOfMonth (_) 
+		),
+		    #"Converted to Table" = Table.FromList(Custom2, Splitter.SplitByNothing(), type table[FechaFinVenta = Date.Type]  , null, ExtraValues.Error),
+		    #"Added Custom" = Table.AddColumn(#"Converted to Table", "Ventas0", each 0, Int64.Type)
+		in
+		    #"Added Custom"
+		```
+	lineageTag: 248863af-cacd-477a-9ad2-927ccde50083
+	queryGroup: StaggingBase
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+/// Días por mes para cálculo de Días Calle. Si es 30.5 usa promedio, si es 0 usa días reales del mes
+expression DiasxMes = 0 meta [IsParameterQuery=true, Type="Number", IsParameterQueryRequired=true]
+	lineageTag: 68d1d1f5-dfe2-4bcb-bd8b-28fb6c7769ec
+	queryGroup: Parametros
+
+	annotation PBI_ResultType = Number
+
+/// Calcula días calle basado en deuda y lista de ventas mensuales
+expression fxCalcularDiasCalle = ```
+		(Deuda as number, ListaVentas as list, ListaFechas as list) as number =>
+		let
+		    // Validaciones iniciales
+		    Result = 
+		        if Deuda = null then 0
+		        else if Deuda = 0 then 0
+		        else if ListaVentas = null or ListaFechas = null then 189
+		        else if List.Count(ListaVentas) = 0 or List.Count(ListaFechas) = 0 then 189
+		        else if List.Count(ListaVentas) <> List.Count(ListaFechas) then 189
+		        else
+		            let
+		                // Filtrar nulls de ambas listas
+		                ListaVentasLimpia = List.Select(ListaVentas, each _ <> null),
+		                ListaFechasLimpia = List.Select(ListaFechas, each _ <> null),
+		                
+		                // Verificar que las listas limpias no estén vacías
+		                Resultado = if List.Count(ListaVentasLimpia) = 0 or List.Count(ListaFechasLimpia) = 0 then 189
+		                else
+		                    let
+		                        // Calcular running totals de ventas
+		                        RunningTotals = List.Accumulate(
+		                            ListaVentasLimpia,
+		                            {0},
+		                            (state, current) => state & {List.Last(state) + current}
+		                        ),
+		                        // Quitar el primer 0
+		                        RunningTotalsLimpio = List.Skip(RunningTotals, 1),
+		                        
+		                        // Encontrar en qué mes se cubre la deuda
+		                        ListaMayoresIguales = List.Select(RunningTotalsLimpio, each _ >= Deuda),
+		                        PosicionMes = if List.Count(ListaMayoresIguales) = 0 then -1 
+		                                     else List.PositionOf(RunningTotalsLimpio, List.First(ListaMayoresIguales), Occurrence.First),
+		                        
+		                        // Calcular días calle
+		                        DiasCalle = if PosicionMes = -1 then 189
+		                        else
+		                            let
+		                                NroMes = PosicionMes,
+		                                RunningTotalActual = RunningTotalsLimpio{PosicionMes},
+		                                RunningTotalAnterior = if PosicionMes = 0 then 0 else RunningTotalsLimpio{PosicionMes - 1},
+		                                VentasMesActual = ListaVentasLimpia{PosicionMes},
+		                                FechaMesActual = ListaFechasLimpia{PosicionMes},
+		                                
+		                                // Validar que FechaMesActual no sea null
+		                                ResultadoFinal = if FechaMesActual = null then 189
+		                                else if VentasMesActual = null or VentasMesActual = 0 then 189
+		                                else
+		                                    let
+		                                        // Determinar días a usar: 30.5 o días reales del mes
+		                                        DiasDelMes = if DiasxMes = 30.5 then 30.5 else Date.DaysInMonth(FechaMesActual),
+		                                        
+		                                        // Calcular días acumulados de meses anteriores
+		                                        DiasAcumuladosAnteriores = if DiasxMes = 30.5 then 
+		                                            NroMes * 30.5
+		                                        else
+		                                            List.Sum(List.Transform(List.FirstN(ListaFechasLimpia, NroMes), each Date.DaysInMonth(_))),
+		                                        
+		                                        // Cálculo final
+		                                        DiasCalleCalculado = DiasAcumuladosAnteriores + DiasDelMes * (Deuda - RunningTotalAnterior) / VentasMesActual
+		                                    in
+		                                        // Asegurar que el resultado sea un número válido
+		                                        if DiasCalleCalculado = null then 189
+		                                        else if Number.IsNaN(DiasCalleCalculado) then 189
+		                                        else if DiasCalleCalculado < 0 then 0
+		                                        else DiasCalleCalculado
+		                            in
+		                                ResultadoFinal
+		                    in
+		                        DiasCalle
+		            in
+		                Resultado
+		in
+		    Result
+		```
+	lineageTag: b250d4a8-727b-4232-a61d-3bbb98601ebe
+	queryGroup: Parametros
+
+/// Deuda agrupada por vendedor
+expression DeudaPorVendedor = ```
+		let
+		    // Partir de la deuda por cliente
+		    Source = BaseDeuda,
+		    
+		    // Traer el vendedor de cada cliente
+		    MergedVendedor = Table.NestedJoin(Source, {"Account"}, ClienteVendedor, {"Cliente"}, "ClienteVendedor", JoinKind.Inner),
+		    ExpandedVendedor = Table.ExpandTableColumn(MergedVendedor, "ClienteVendedor", {"Vendedor"}, {"Vendedor"}),
+		    
+		    // Agrupar por vendedor
+		    GroupedByVendedor = Table.Group(ExpandedVendedor, {"Vendedor"}, {{"Deuda", each List.Sum([Deuda]), type number}})
+		in
+		    GroupedByVendedor
+		```
+	lineageTag: b193e1a7-aa52-4422-a51b-4950dbb47cee
+	queryGroup: StaggingBase
+
+/// Ventas agrupadas por vendedor y fecha
+expression VentasPorVendedor = ```
+		let
+		    // Partir de las ventas por cliente
+		    Source = BaseVentas,
+		    
+		    // Traer el vendedor de cada cliente
+		    MergedVendedor = Table.NestedJoin(Source, {"Account"}, ClienteVendedor, {"Cliente"}, "ClienteVendedor", JoinKind.Inner),
+		    ExpandedVendedor = Table.ExpandTableColumn(MergedVendedor, "ClienteVendedor", {"Vendedor"}, {"Vendedor"}),
+		    
+		    // Agrupar por vendedor y fecha
+		    GroupedByVendedorFecha = Table.Group(ExpandedVendedor, {"Vendedor", "FechaFinVenta"}, {{"Ventas", each List.Sum([Ventas]), type number}})
+		in
+		    GroupedByVendedorFecha
+		```
+	lineageTag: 29d68a74-f22c-4e98-8e20-1f1258c3a4b4
+	queryGroup: StaggingBase
+
+/// Clientes con deuda > 0 Y con ventas en el período
+expression DiasCalle_Cliente_ConVentas = ```
+		let
+		    // Base de clientes
+		    Source = ClienteVendedor,
+		    SelectColumns = Table.SelectColumns(Source, {"Cliente", "NombreCliente"}),
+		    
+		    // Cross join con fecha de deuda
+		    AddedPeriodos = Table.AddColumn(SelectColumns, "PeriodoDeudayVentas", each PeriodoDeudayVentas),
+		    ExpandedPeriodos = Table.ExpandTableColumn(AddedPeriodos, "PeriodoDeudayVentas", {"FechaArchivoDeuda"}, {"FechaArchivoDeuda"}),
+		    
+		    // Traer deuda - SOLO clientes con deuda > 0
+		    MergedDeuda = Table.NestedJoin(ExpandedPeriodos, {"Cliente"}, BaseDeuda, {"Account"}, "BaseDeuda", JoinKind.Inner),
+		    ExpandedDeuda = Table.ExpandTableColumn(MergedDeuda, "BaseDeuda", {"Deuda"}, {"Deuda"}),
+		    FilterDeuda = Table.SelectRows(ExpandedDeuda, each [Deuda] > 0),
+		    
+		    // Cross join con periodos de venta
+		    AddedPeriodosVenta = Table.AddColumn(FilterDeuda, "PeriodoVentas", each PeriodoVentas),
+		    
+		    // Filtrar solo los meses válidos para cada fecha de deuda
+		    FiltraPeriodosValidos = Table.AddColumn(AddedPeriodosVenta, "VentasFiltradas", each 
+		        let 
+		            Fecha = [FechaArchivoDeuda],
+		            FechaMin = #date(Date.Year(Date.AddMonths(Fecha, -(MesesdeVenta-1))), Date.Month(Date.AddMonths(Fecha, -(MesesdeVenta-1))), 1)
+		        in 
+		            Table.SelectRows([PeriodoVentas], each ([FechaFinVenta] <= Fecha) and [FechaFinVenta] >= FechaMin)
+		    ),
+		    
+		    RemovedPeriodoVentas = Table.RemoveColumns(FiltraPeriodosValidos, {"PeriodoVentas"}),
+		    
+		    // SOLO expandir si la tabla NO está vacía (tiene ventas)
+		    FilterConVentas = Table.SelectRows(RemovedPeriodoVentas, each Table.RowCount([VentasFiltradas]) > 0),
+		    
+		    ExpandedVentasFiltradas = Table.ExpandTableColumn(FilterConVentas, "VentasFiltradas", {"FechaFinVenta"}, {"FechaFinVenta"}),
+		    
+		    // Traer ventas por cliente y fecha
+		    MergedVentas = Table.NestedJoin(ExpandedVentasFiltradas, {"Cliente", "FechaFinVenta"}, BaseVentas, {"Account", "FechaFinVenta"}, "BaseVentas", JoinKind.LeftOuter),
+		    ExpandedVentas = Table.ExpandTableColumn(MergedVentas, "BaseVentas", {"Ventas"}, {"Ventas"}),
+		    TransformedVentas = Table.TransformColumns(ExpandedVentas, {{"Ventas", each if _ = null then 0 else _, Int64.Type}}),
+		    
+		    // Ordenar por fecha descendente (más reciente primero)
+		    SortedRows = Table.Sort(TransformedVentas, {{"Cliente", Order.Ascending}, {"FechaArchivoDeuda", Order.Ascending}, {"FechaFinVenta", Order.Descending}}),
+		    
+		    // Agrupar y crear lista de ventas Y FECHAS por cliente/fecha
+		    GroupedRows = Table.Group(SortedRows, {"Cliente", "FechaArchivoDeuda", "NombreCliente", "Deuda"}, 
+		        {
+		            {"ListaVentas", each [Ventas], type list},
+		            {"ListaFechas", each [FechaFinVenta], type list},
+		            {"VentasPeriodo", each List.Sum([Ventas]), type number}
+		        }
+		    ),
+		    
+		    // Calcular días calle - SIN manejo de errores para identificar el problema
+		    AddedDiasCalle = Table.AddColumn(GroupedRows, "DiasCalle", each fxCalcularDiasCalle([Deuda], [ListaVentas], [ListaFechas]), type number),
+		    
+		    // Limpiar y renombrar
+		    RenamedColumns = Table.RenameColumns(AddedDiasCalle, {{"Cliente", "Llave"}, {"NombreCliente", "Descripcion"}, {"Deuda", "DeudaPeriodo"}}),
+		    AddedAttribute = Table.AddColumn(RenamedColumns, "Attribute", each "Cliente", type text),
+		    
+		    // Tipos finales
+		    FinalTypes = Table.TransformColumnTypes(AddedAttribute, {{"Llave", type text}, {"DeudaPeriodo", Int64.Type}, {"VentasPeriodo", Int64.Type}, {"DiasCalle", type number}, {"FechaArchivoDeuda", type date}, {"Descripcion", type text}, {"Attribute", type text}})
+		in
+		    FinalTypes
+		```
+	lineageTag: d0c36c4b-e281-42a9-a3b9-ade11873271e
+	queryGroup: Deudas
+
+/// Clientes con deuda > 0 pero SIN ventas en el período
+expression DiasCalle_Cliente_SinVentas = ```
+		let
+		    // Base de clientes
+		    Source = ClienteVendedor,
+		    SelectColumns = Table.SelectColumns(Source, {"Cliente", "NombreCliente"}),
+		    
+		    // Cross join con fecha de deuda
+		    AddedPeriodos = Table.AddColumn(SelectColumns, "PeriodoDeudayVentas", each PeriodoDeudayVentas),
+		    ExpandedPeriodos = Table.ExpandTableColumn(AddedPeriodos, "PeriodoDeudayVentas", {"FechaArchivoDeuda"}, {"FechaArchivoDeuda"}),
+		    
+		    // Traer deuda - SOLO clientes con deuda > 0
+		    MergedDeuda = Table.NestedJoin(ExpandedPeriodos, {"Cliente"}, BaseDeuda, {"Account"}, "BaseDeuda", JoinKind.Inner),
+		    ExpandedDeuda = Table.ExpandTableColumn(MergedDeuda, "BaseDeuda", {"Deuda"}, {"Deuda"}),
+		    FilterDeuda = Table.SelectRows(ExpandedDeuda, each [Deuda] > 0),
+		    
+		    // Cross join con periodos de venta
+		    AddedPeriodosVenta = Table.AddColumn(FilterDeuda, "PeriodoVentas", each PeriodoVentas),
+		    
+		    // Filtrar solo los meses válidos para cada fecha de deuda
+		    FiltraPeriodosValidos = Table.AddColumn(AddedPeriodosVenta, "VentasFiltradas", each 
+		        let 
+		            Fecha = [FechaArchivoDeuda],
+		            FechaMin = #date(Date.Year(Date.AddMonths(Fecha, -(MesesdeVenta-1))), Date.Month(Date.AddMonths(Fecha, -(MesesdeVenta-1))), 1)
+		        in 
+		            Table.SelectRows([PeriodoVentas], each ([FechaFinVenta] <= Fecha) and [FechaFinVenta] >= FechaMin)
+		    ),
+		    
+		    RemovedPeriodoVentas = Table.RemoveColumns(FiltraPeriodosValidos, {"PeriodoVentas"}),
+		    
+		    // SOLO clientes SIN ventas en el período
+		    FilterSinVentas = Table.SelectRows(RemovedPeriodoVentas, each Table.RowCount([VentasFiltradas]) = 0),
+		    RemovedVentasFiltradas = Table.RemoveColumns(FilterSinVentas, {"VentasFiltradas"}),
+		    
+		    // Agregar columnas calculadas
+		    AddedDiasCalle = Table.AddColumn(RemovedVentasFiltradas, "DiasCalle", each 189, type number),
+		    AddedVentasPeriodo = Table.AddColumn(AddedDiasCalle, "VentasPeriodo", each 0, Int64.Type),
+		    
+		    // Renombrar
+		    RenamedColumns = Table.RenameColumns(AddedVentasPeriodo, {{"Cliente", "Llave"}, {"NombreCliente", "Descripcion"}, {"Deuda", "DeudaPeriodo"}}),
+		    AddedAttribute = Table.AddColumn(RenamedColumns, "Attribute", each "Cliente", type text),
+		    
+		    // Tipos finales
+		    FinalTypes = Table.TransformColumnTypes(AddedAttribute, {{"Llave", type text}, {"DeudaPeriodo", Int64.Type}, {"VentasPeriodo", Int64.Type}, {"DiasCalle", type number}, {"FechaArchivoDeuda", type date}, {"Descripcion", type text}, {"Attribute", type text}})
+		in
+		    FinalTypes
+		```
+	lineageTag: 3ea616e0-1a70-44ed-912e-064dad3cbc29
+	queryGroup: Deudas
+
+/// Clientes sin deuda (deuda = 0)
+expression DiasCalle_Cliente_SinDeuda = ```
+		let
+		    // Base de clientes
+		    Source = ClienteVendedor,
+		    SelectColumns = Table.SelectColumns(Source, {"Cliente", "NombreCliente"}),
+		    
+		    // Cross join con fecha de deuda
+		    AddedPeriodos = Table.AddColumn(SelectColumns, "PeriodoDeudayVentas", each PeriodoDeudayVentas),
+		    ExpandedPeriodos = Table.ExpandTableColumn(AddedPeriodos, "PeriodoDeudayVentas", {"FechaArchivoDeuda"}, {"FechaArchivoDeuda"}),
+		    
+		    // Traer deuda
+		    MergedDeuda = Table.NestedJoin(ExpandedPeriodos, {"Cliente"}, BaseDeuda, {"Account"}, "BaseDeuda", JoinKind.LeftOuter),
+		    ExpandedDeuda = Table.ExpandTableColumn(MergedDeuda, "BaseDeuda", {"Deuda"}, {"Deuda"}),
+		    TransformedDeuda = Table.TransformColumns(ExpandedDeuda, {{"Deuda", each if _ = null then 0 else _, Int64.Type}}),
+		    
+		    // SOLO clientes con deuda = 0
+		    FilterSinDeuda = Table.SelectRows(TransformedDeuda, each [Deuda] = 0),
+		    
+		    // Agregar columnas calculadas
+		    AddedDiasCalle = Table.AddColumn(FilterSinDeuda, "DiasCalle", each 0, type number),
+		    AddedVentasPeriodo = Table.AddColumn(AddedDiasCalle, "VentasPeriodo", each 0, Int64.Type),
+		    
+		    // Renombrar
+		    RenamedColumns = Table.RenameColumns(AddedVentasPeriodo, {{"Cliente", "Llave"}, {"NombreCliente", "Descripcion"}, {"Deuda", "DeudaPeriodo"}}),
+		    AddedAttribute = Table.AddColumn(RenamedColumns, "Attribute", each "Cliente", type text),
+		    
+		    // Tipos finales
+		    FinalTypes = Table.TransformColumnTypes(AddedAttribute, {{"Llave", type text}, {"DeudaPeriodo", Int64.Type}, {"VentasPeriodo", Int64.Type}, {"DiasCalle", type number}, {"FechaArchivoDeuda", type date}, {"Descripcion", type text}, {"Attribute", type text}})
+		in
+		    FinalTypes
+		```
+	lineageTag: a6a9ecfe-a117-4904-92f6-cfca91089dca
+	queryGroup: Deudas
+
+/// Cálculo de días calle por Cliente (UNION de todos los casos)
+expression DiasCalle_Cliente = ```
+		let
+		    // UNION de los 3 casos
+		    Source = Table.Combine({
+		        DiasCalle_Cliente_ConVentas,
+		        DiasCalle_Cliente_SinVentas,
+		        DiasCalle_Cliente_SinDeuda
+		    }),
+		    
+		    // Ordenar
+		    SortedRows = Table.Sort(Source, {{"Llave", Order.Ascending}, {"FechaArchivoDeuda", Order.Ascending}})
+		in
+		    SortedRows
+		```
+	lineageTag: 749e5387-6b67-477e-a6cf-f536a63c1a88
+	queryGroup: Deudas
+
+/// Vendedores con deuda > 0 Y con ventas en el período
+expression DiasCalle_Vendedor_ConVentas = ```
+		let
+		    // Base de vendedores únicos
+		    Source = Table.Distinct(Table.SelectColumns(ClienteVendedor, {"Vendedor", "NombreVendedor"})),
+		    
+		    // Cross join con fecha de deuda
+		    AddedPeriodos = Table.AddColumn(Source, "PeriodoDeudayVentas", each PeriodoDeudayVentas),
+		    ExpandedPeriodos = Table.ExpandTableColumn(AddedPeriodos, "PeriodoDeudayVentas", {"FechaArchivoDeuda"}, {"FechaArchivoDeuda"}),
+		    
+		    // Traer deuda por vendedor - SOLO vendedores con deuda > 0
+		    MergedDeuda = Table.NestedJoin(ExpandedPeriodos, {"Vendedor"}, DeudaPorVendedor, {"Vendedor"}, "DeudaPorVendedor", JoinKind.Inner),
+		    ExpandedDeuda = Table.ExpandTableColumn(MergedDeuda, "DeudaPorVendedor", {"Deuda"}, {"Deuda"}),
+		    FilterDeuda = Table.SelectRows(ExpandedDeuda, each [Deuda] > 0),
+		    
+		    // Cross join con periodos de venta
+		    AddedPeriodosVenta = Table.AddColumn(FilterDeuda, "PeriodoVentas", each PeriodoVentas),
+		    
+		    // Filtrar solo los meses válidos
+		    FiltraPeriodosValidos = Table.AddColumn(AddedPeriodosVenta, "VentasFiltradas", each 
+		        let 
+		            Fecha = [FechaArchivoDeuda],
+		            FechaMin = #date(Date.Year(Date.AddMonths(Fecha, -(MesesdeVenta-1))), Date.Month(Date.AddMonths(Fecha, -(MesesdeVenta-1))), 1)
+		        in 
+		            Table.SelectRows([PeriodoVentas], each ([FechaFinVenta] <= Fecha) and [FechaFinVenta] >= FechaMin)
+		    ),
+		    
+		    RemovedPeriodoVentas = Table.RemoveColumns(FiltraPeriodosValidos, {"PeriodoVentas"}),
+		    
+		    // SOLO vendedores con ventas en el período
+		    FilterConVentas = Table.SelectRows(RemovedPeriodoVentas, each Table.RowCount([VentasFiltradas]) > 0),
+		    
+		    ExpandedVentasFiltradas = Table.ExpandTableColumn(FilterConVentas, "VentasFiltradas", {"FechaFinVenta"}, {"FechaFinVenta"}),
+		    
+		    // Traer ventas por vendedor y fecha
+		    MergedVentas = Table.NestedJoin(ExpandedVentasFiltradas, {"Vendedor", "FechaFinVenta"}, VentasPorVendedor, {"Vendedor", "FechaFinVenta"}, "VentasPorVendedor", JoinKind.LeftOuter),
+		    ExpandedVentas = Table.ExpandTableColumn(MergedVentas, "VentasPorVendedor", {"Ventas"}, {"Ventas"}),
+		    TransformedVentas = Table.TransformColumns(ExpandedVentas, {{"Ventas", each if _ = null then 0 else _, Int64.Type}}),
+		    
+		    // Ordenar por fecha descendente
+		    SortedRows = Table.Sort(TransformedVentas, {{"Vendedor", Order.Ascending}, {"FechaArchivoDeuda", Order.Ascending}, {"FechaFinVenta", Order.Descending}}),
+		    
+		    // Agrupar y crear lista de ventas Y FECHAS
+		    GroupedRows = Table.Group(SortedRows, {"Vendedor", "FechaArchivoDeuda", "NombreVendedor", "Deuda"}, 
+		        {
+		            {"ListaVentas", each [Ventas], type list},
+		            {"ListaFechas", each [FechaFinVenta], type list},
+		            {"VentasPeriodo", each List.Sum([Ventas]), type number}
+		        }
+		    ),
+		    
+		    // Calcular días calle - SIN manejo de errores para identificar el problema
+		    AddedDiasCalle = Table.AddColumn(GroupedRows, "DiasCalle", each fxCalcularDiasCalle([Deuda], [ListaVentas], [ListaFechas]), type number),
+		    
+		    // Limpiar y renombrar
+		    RenamedColumns = Table.RenameColumns(AddedDiasCalle, {{"Vendedor", "Llave"}, {"NombreVendedor", "Descripcion"}, {"Deuda", "DeudaPeriodo"}}),
+		    AddedAttribute = Table.AddColumn(RenamedColumns, "Attribute", each "Vendedor", type text),
+		    
+		    // Tipos finales
+		    FinalTypes = Table.TransformColumnTypes(AddedAttribute, {{"Llave", type text}, {"DeudaPeriodo", Int64.Type}, {"VentasPeriodo", Int64.Type}, {"DiasCalle", type number}, {"FechaArchivoDeuda", type date}, {"Descripcion", type text}, {"Attribute", type text}})
+		in
+		    FinalTypes
+		```
+	lineageTag: 935462a6-dfc0-4420-91da-eddad2ae7b12
+	queryGroup: Deudas
+
+/// Vendedores con deuda > 0 pero SIN ventas en el período
+expression DiasCalle_Vendedor_SinVentas = ```
+		let
+		    // Base de vendedores únicos
+		    Source = Table.Distinct(Table.SelectColumns(ClienteVendedor, {"Vendedor", "NombreVendedor"})),
+		    
+		    // Cross join con fecha de deuda
+		    AddedPeriodos = Table.AddColumn(Source, "PeriodoDeudayVentas", each PeriodoDeudayVentas),
+		    ExpandedPeriodos = Table.ExpandTableColumn(AddedPeriodos, "PeriodoDeudayVentas", {"FechaArchivoDeuda"}, {"FechaArchivoDeuda"}),
+		    
+		    // Traer deuda por vendedor - SOLO vendedores con deuda > 0
+		    MergedDeuda = Table.NestedJoin(ExpandedPeriodos, {"Vendedor"}, DeudaPorVendedor, {"Vendedor"}, "DeudaPorVendedor", JoinKind.Inner),
+		    ExpandedDeuda = Table.ExpandTableColumn(MergedDeuda, "DeudaPorVendedor", {"Deuda"}, {"Deuda"}),
+		    FilterDeuda = Table.SelectRows(ExpandedDeuda, each [Deuda] > 0),
+		    
+		    // Cross join con periodos de venta
+		    AddedPeriodosVenta = Table.AddColumn(FilterDeuda, "PeriodoVentas", each PeriodoVentas),
+		    
+		    // Filtrar solo los meses válidos
+		    FiltraPeriodosValidos = Table.AddColumn(AddedPeriodosVenta, "VentasFiltradas", each 
+		        let 
+		            Fecha = [FechaArchivoDeuda],
+		            FechaMin = #date(Date.Year(Date.AddMonths(Fecha, -(MesesdeVenta-1))), Date.Month(Date.AddMonths(Fecha, -(MesesdeVenta-1))), 1)
+		        in 
+		            Table.SelectRows([PeriodoVentas], each ([FechaFinVenta] <= Fecha) and [FechaFinVenta] >= FechaMin)
+		    ),
+		    
+		    RemovedPeriodoVentas = Table.RemoveColumns(FiltraPeriodosValidos, {"PeriodoVentas"}),
+		    
+		    // SOLO vendedores SIN ventas en el período
+		    FilterSinVentas = Table.SelectRows(RemovedPeriodoVentas, each Table.RowCount([VentasFiltradas]) = 0),
+		    RemovedVentasFiltradas = Table.RemoveColumns(FilterSinVentas, {"VentasFiltradas"}),
+		    
+		    // Agregar columnas calculadas
+		    AddedDiasCalle = Table.AddColumn(RemovedVentasFiltradas, "DiasCalle", each 189, type number),
+		    AddedVentasPeriodo = Table.AddColumn(AddedDiasCalle, "VentasPeriodo", each 0, Int64.Type),
+		    
+		    // Renombrar
+		    RenamedColumns = Table.RenameColumns(AddedVentasPeriodo, {{"Vendedor", "Llave"}, {"NombreVendedor", "Descripcion"}, {"Deuda", "DeudaPeriodo"}}),
+		    AddedAttribute = Table.AddColumn(RenamedColumns, "Attribute", each "Vendedor", type text),
+		    
+		    // Tipos finales
+		    FinalTypes = Table.TransformColumnTypes(AddedAttribute, {{"Llave", type text}, {"DeudaPeriodo", Int64.Type}, {"VentasPeriodo", Int64.Type}, {"DiasCalle", type number}, {"FechaArchivoDeuda", type date}, {"Descripcion", type text}, {"Attribute", type text}})
+		in
+		    FinalTypes
+		```
+	lineageTag: 227227b2-e45f-43bb-8083-d16dd9af2fa9
+	queryGroup: Deudas
+
+/// Vendedores sin deuda (deuda = 0)
+expression DiasCalle_Vendedor_SinDeuda = ```
+		let
+		    // Base de vendedores únicos
+		    Source = Table.Distinct(Table.SelectColumns(ClienteVendedor, {"Vendedor", "NombreVendedor"})),
+		    
+		    // Cross join con fecha de deuda
+		    AddedPeriodos = Table.AddColumn(Source, "PeriodoDeudayVentas", each PeriodoDeudayVentas),
+		    ExpandedPeriodos = Table.ExpandTableColumn(AddedPeriodos, "PeriodoDeudayVentas", {"FechaArchivoDeuda"}, {"FechaArchivoDeuda"}),
+		    
+		    // Traer deuda por vendedor
+		    MergedDeuda = Table.NestedJoin(ExpandedPeriodos, {"Vendedor"}, DeudaPorVendedor, {"Vendedor"}, "DeudaPorVendedor", JoinKind.LeftOuter),
+		    ExpandedDeuda = Table.ExpandTableColumn(MergedDeuda, "DeudaPorVendedor", {"Deuda"}, {"Deuda"}),
+		    TransformedDeuda = Table.TransformColumns(ExpandedDeuda, {{"Deuda", each if _ = null then 0 else _, Int64.Type}}),
+		    
+		    // SOLO vendedores con deuda = 0
+		    FilterSinDeuda = Table.SelectRows(TransformedDeuda, each [Deuda] = 0),
+		    
+		    // Agregar columnas calculadas
+		    AddedDiasCalle = Table.AddColumn(FilterSinDeuda, "DiasCalle", each 0, type number),
+		    AddedVentasPeriodo = Table.AddColumn(AddedDiasCalle, "VentasPeriodo", each 0, Int64.Type),
+		    
+		    // Renombrar
+		    RenamedColumns = Table.RenameColumns(AddedVentasPeriodo, {{"Vendedor", "Llave"}, {"NombreVendedor", "Descripcion"}, {"Deuda", "DeudaPeriodo"}}),
+		    AddedAttribute = Table.AddColumn(RenamedColumns, "Attribute", each "Vendedor", type text),
+		    
+		    // Tipos finales
+		    FinalTypes = Table.TransformColumnTypes(AddedAttribute, {{"Llave", type text}, {"DeudaPeriodo", Int64.Type}, {"VentasPeriodo", Int64.Type}, {"DiasCalle", type number}, {"FechaArchivoDeuda", type date}, {"Descripcion", type text}, {"Attribute", type text}})
+		in
+		    FinalTypes
+		```
+	lineageTag: bf6ac761-efa1-4fd7-8d61-573dec8dbfb1
+	queryGroup: Deudas
+
+/// Cálculo de días calle por Vendedor (UNION de todos los casos)
+expression DiasCalle_Vendedor = ```
+		let
+		    // UNION de los 3 casos
+		    Source = Table.Combine({
+		        DiasCalle_Vendedor_ConVentas,
+		        DiasCalle_Vendedor_SinVentas,
+		        DiasCalle_Vendedor_SinDeuda
+		    }),
+		    
+		    // Ordenar
+		    SortedRows = Table.Sort(Source, {{"Llave", Order.Ascending}, {"FechaArchivoDeuda", Order.Ascending}})
+		in
+		    SortedRows
+		```
+	lineageTag: 383ec23f-434e-446f-8e93-fb2436d147cd
+	queryGroup: Deudas
+

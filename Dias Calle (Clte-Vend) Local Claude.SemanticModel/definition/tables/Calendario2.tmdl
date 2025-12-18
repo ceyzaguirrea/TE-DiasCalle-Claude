@@ -1,0 +1,76 @@
+table Calendario2
+	isHidden
+	lineageTag: 2cc4ad3e-bfa7-44d7-9eb5-edb610504f40
+
+	column Año
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 90195102-b5df-4d50-8035-45eea8917405
+		summarizeBy: sum
+		sourceColumn: Año
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column FindeMesLLave
+		dataType: string
+		isHidden
+		lineageTag: 68a8e445-4c56-4bf7-936d-ec5c331290ce
+		summarizeBy: none
+		sourceColumn: FindeMesLLave
+		sortByColumn: Index
+
+		changedProperty = SortByColumn
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column FinMes
+		dataType: dateTime
+		isHidden
+		formatString: Short Date
+		lineageTag: aa436216-641e-4cbf-9ffe-1d6afaeac8dd
+		summarizeBy: none
+		sourceColumn: FinMes
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Index
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 836561e5-0539-439a-bd74-101da4bb53b5
+		summarizeBy: sum
+		sourceColumn: Index
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Calendario2 = m
+		mode: import
+		source =
+				let
+				    Source = Calendario,
+				    #"Removed Other Columns" = Table.SelectColumns(Source,{"Año", "MesAño", "FinMes"}),
+				    #"Removed Duplicates" = Table.Distinct(#"Removed Other Columns", {"FinMes"}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Removed Duplicates",{{"MesAño", "FindeMesLLave"}}),
+				    #"Sorted Rows" = Table.Sort(#"Renamed Columns",{{"FinMes", Order.Descending}}),
+				    #"Added Index" = Table.AddIndexColumn(#"Sorted Rows", "Index", 2, 1, Int64.Type),
+				    #"Appended Query" = Table.Combine({#"Added Index", Calendario2Paso, Calendario2Paso2})
+				in
+				    #"Appended Query"
+
+	changedProperty = IsHidden
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

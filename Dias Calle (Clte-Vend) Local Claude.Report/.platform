@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "Dias Calle (Clte-Vend) Local Claude"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "0dba43e1-4bc9-4b12-904d-5ca13b0cb5c2"
+  }
+}

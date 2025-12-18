@@ -1,0 +1,128 @@
+table DiasCalle
+	lineageTag: 36a2fb01-e0fa-4eb9-818b-b5305e934fbc
+
+	measure 'Deuda y Ventas ultimos 6 Meses' = ```
+			
+			VAR _PeriodoSeleccionado = MAX(Calendario[Fecha])
+			VAR _PreviousDates = DATESINPERIOD(Calendario2[FinMes],_PeriodoSeleccionado,-6,MONTH)
+			VAR _Fecha = MAX(Calendario2[FindeMesLLave])
+			VAR _Result = 
+			IF(_Fecha = "Deuda", 
+			    CALCULATE(
+			        SUM(DiasCalle[DeudaPeriodo]), 
+			        DiasCalle[FechaArchivoDeuda] = _PeriodoSeleccionado
+			    ),
+			    IF(_Fecha = "Día Calle", 
+			    IF( ISFILTERED(DiasCalle[Descripcion]),
+			    CALCULATE(
+			        SUM(DiasCalle[DiasCalle]), 
+			        DiasCalle[FechaArchivoDeuda] = _PeriodoSeleccionado
+			    )),
+			    CALCULATE(
+			        SUM(Ventas[Ventas]),
+			        REMOVEFILTERS(Calendario),
+			        _PreviousDates,
+			        USERELATIONSHIP(Calendario[FinMes],Calendario2[FinMes]),
+			        TREATAS(VALUES(DiasCalle[Llave]),Ventas[Llave])
+			    )
+			))
+			RETURN
+			_Result
+			```
+		formatString: #,0
+		lineageTag: e4e7596e-db82-4b03-b5ba-62e0d3ab43c8
+
+	measure 'Tipo Dia Calle' = SELECTEDVALUE(DiasCalle[Attribute])
+		lineageTag: cff11334-97d8-4b2d-9232-822a316fde05
+
+	measure 'Fecha Archivo Cobranza' = "Fecha archivo de Cobranza   "&MAX(FechaFinVentas[Value])
+		lineageTag: 09002b88-2acf-45bc-87ae-4e952743b5f9
+
+	column Attribute
+		dataType: string
+		lineageTag: babc5473-d7cc-48fe-a173-d6ee0a6f09bf
+		summarizeBy: none
+		sourceColumn: Attribute
+
+		annotation SummarizationSetBy = Automatic
+
+	column FechaArchivoDeuda
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 74c13b2e-f8ee-4a56-8b96-bc3301c7d61c
+		summarizeBy: none
+		sourceColumn: FechaArchivoDeuda
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column DiasCalle
+		dataType: double
+		lineageTag: 47c91178-54b2-47b4-8458-f163b788a42c
+		summarizeBy: none
+		sourceColumn: DiasCalle
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Llave
+		dataType: string
+		lineageTag: 86144db1-a3fa-49fa-b2b5-e0acf8ff4988
+		summarizeBy: none
+		sourceColumn: Llave
+
+		annotation SummarizationSetBy = Automatic
+
+	column DeudaPeriodo
+		dataType: int64
+		formatString: \$#,0;\$-#,0;\$#,0
+		lineageTag: b76c627f-4e6f-400a-82dc-ea4fe9e9bbb3
+		summarizeBy: sum
+		sourceColumn: DeudaPeriodo
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"es-CL"}
+
+	column VentasPeriodo
+		dataType: int64
+		formatString: \$#,0;\$-#,0;\$#,0
+		lineageTag: b8136974-7794-4e0b-97db-3f083dedeee8
+		summarizeBy: sum
+		sourceColumn: VentasPeriodo
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"es-CL"}
+
+	column Descripcion
+		dataType: string
+		lineageTag: 5ff10d76-bfb4-47ac-8bce-d608b62a6e7d
+		summarizeBy: none
+		sourceColumn: Descripcion
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DiasCalle = m
+		mode: import
+		queryGroup: Deudas
+		source = ```
+				let
+				    // UNION de Cliente y Vendedor
+				    Source = Table.Combine({DiasCalle_Cliente, DiasCalle_Vendedor}),
+				    
+				    // Ordenar
+				    SortedRows = Table.Sort(Source, {{"Attribute", Order.Ascending}, {"Llave", Order.Ascending}, {"FechaArchivoDeuda", Order.Ascending}}),
+				    
+				    // Tipos finales
+				    FinalTypes = Table.TransformColumnTypes(SortedRows, {{"Llave", type text}, {"FechaArchivoDeuda", type date}, {"DeudaPeriodo", Int64.Type}, {"Attribute", type text}, {"DiasCalle", type number}, {"Descripcion", type text}})
+				in
+				    FinalTypes
+				```
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

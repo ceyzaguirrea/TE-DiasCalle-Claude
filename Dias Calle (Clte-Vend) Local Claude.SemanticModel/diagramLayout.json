@@ -1,0 +1,89 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 31.391176875248902,
+        "y": 0
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 106.58766198599835,
+            "y": 234.59824255537478
+          },
+          "nodeIndex": "DiasCalle",
+          "nodeLineageTag": "36a2fb01-e0fa-4eb9-818b-b5305e934fbc",
+          "size": {
+            "height": 357.74480712166172,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 307.54826317602664,
+            "y": 0
+          },
+          "nodeIndex": "Calendario",
+          "nodeLineageTag": "469356e3-c5ff-49a0-9f7a-5e6517ab9344",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 0,
+          "expandedHeight": 300
+        },
+        {
+          "location": {
+            "x": 0,
+            "y": 0
+          },
+          "nodeIndex": "Calendario2",
+          "nodeLineageTag": "2cc4ad3e-bfa7-44d7-9eb5-edb610504f40",
+          "size": {
+            "height": 104,
+            "width": 234
+          },
+          "zIndex": 0,
+          "expandedHeight": 176
+        },
+        {
+          "location": {
+            "x": 728.77055384902008,
+            "y": 326.80445670818131
+          },
+          "nodeIndex": "Ventas",
+          "nodeLineageTag": "23fd5681-4338-4937-9ccd-a5ea93c122a3",
+          "size": {
+            "height": 176,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1012.7705538490201,
+            "y": 232.17152483851828
+          },
+          "nodeIndex": "FechaFinVentas",
+          "nodeLineageTag": "92e9f37f-c5d7-4f17-a673-c981292ef2ea",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 0
+        }
+      ],
+      "name": "All tables",
+      "zoomValue": 70.558031366868448,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "All tables",
+  "defaultDiagram": "All tables"
+}

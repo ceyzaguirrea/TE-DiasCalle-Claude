@@ -1,0 +1,87 @@
+table Ventas
+	lineageTag: 23fd5681-4338-4937-9ccd-a5ea93c122a3
+
+	column Attribute
+		dataType: string
+		lineageTag: 0df7ecdf-95cc-4736-ae46-b4cb5fd1a8c5
+		summarizeBy: none
+		sourceColumn: Attribute
+
+		annotation SummarizationSetBy = Automatic
+
+	column Llave
+		dataType: string
+		lineageTag: a411a237-ffeb-4520-aaba-aabe5f960fc4
+		summarizeBy: none
+		sourceColumn: Llave
+
+		annotation SummarizationSetBy = Automatic
+
+	column FechaFinVenta
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 73943902-3673-4dd7-8602-01bcc7c37c54
+		summarizeBy: none
+		sourceColumn: FechaFinVenta
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Ventas
+		dataType: int64
+		formatString: 0
+		lineageTag: 8d2cdb06-7390-45a3-81ce-a5382eb037e4
+		summarizeBy: sum
+		sourceColumn: Ventas
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Ventas = m
+		mode: import
+		queryGroup: Ventas
+		source = ```
+				let
+				    // Obtener datos base sin columnas innecesarias
+				    Source = ClienteVendedor,
+				    RemovedColumns = Table.RemoveColumns(Source, {"NombreCliente", "NombreVendedor"}),
+				    
+				    // OPTIMIZACIÓN 1: Cross join sin columna auxiliar
+				    // Usar Table.AddColumn con cada row expandiendo PeriodoVentas
+				    AddedPeriodos = Table.AddColumn(RemovedColumns, "PeriodoVentas", each PeriodoVentas),
+				    ExpandedPeriodos = Table.ExpandTableColumn(AddedPeriodos, "PeriodoVentas", {"FechaFinVenta"}, {"FechaFinVenta"}),
+				    
+				    // Merge con BaseVentas
+				    MergedVentas = Table.NestedJoin(ExpandedPeriodos, {"Cliente", "FechaFinVenta"}, BaseVentas, {"Account", "FechaFinVenta"}, "BaseVentas", JoinKind.LeftOuter),
+				    ExpandedVentas = Table.ExpandTableColumn(MergedVentas, "BaseVentas", {"Ventas"}, {"Ventas"}),
+				    
+				    // OPTIMIZACIÓN 2: Combinar Replace null y ChangeType en una sola operación
+				    TransformedVentas = Table.TransformColumns(ExpandedVentas, {{"Ventas", each if _ = null then 0 else _, Int64.Type}}),
+				    
+				    // OPTIMIZACIÓN 3: Evitar Unpivot, crear queries separadas
+				    // Tabla de Clientes
+				    VentasCliente = Table.SelectColumns(TransformedVentas, {"Cliente", "FechaFinVenta", "Ventas"}),
+				    RenamedCliente = Table.RenameColumns(VentasCliente, {{"Cliente", "Llave"}}),
+				    AddedAttributeCliente = Table.AddColumn(RenamedCliente, "Attribute", each "Cliente", type text),
+				    
+				    // Tabla de Vendedores
+				    VentasVendedor = Table.SelectColumns(TransformedVentas, {"Vendedor", "FechaFinVenta", "Ventas"}),
+				    RenamedVendedor = Table.RenameColumns(VentasVendedor, {{"Vendedor", "Llave"}}),
+				    AddedAttributeVendedor = Table.AddColumn(RenamedVendedor, "Attribute", each "Vendedor", type text),
+				    
+				    // Union de ambas tablas
+				    CombinedTables = Table.Combine({AddedAttributeCliente, AddedAttributeVendedor}),
+				    
+				    // Agrupar (este paso es necesario para consolidar)
+				    GroupedRows = Table.Group(CombinedTables, {"Attribute", "Llave", "FechaFinVenta"}, {{"Ventas", each List.Sum([Ventas]), type number}}),
+				    
+				    // Tipos finales
+				    FinalTypes = Table.TransformColumnTypes(GroupedRows,{{"Llave", type text}, {"Ventas", Int64.Type}, {"FechaFinVenta", type date}})
+				in
+				    FinalTypes
+				```
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

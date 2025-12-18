@@ -1,0 +1,18 @@
+# SO / editor
+.DS_Store
+Thumbs.db
+
+# VS Code - solo settings compartibles
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/tasks.json
+
+# Power BI (no versionar binarios)
+*.pbix
+*.pbit
+
+# temporales / cache
+~$*
+*.tmp
+*.log 

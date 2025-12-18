@@ -1,0 +1,10 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Echo PBIP reminder",
+      "type": "shell",
+      "command": "echo 'Recuerda abrir el .pbip en Desktop para validar cambios PBIR/TMDL'"
+    }
+  ]
+}

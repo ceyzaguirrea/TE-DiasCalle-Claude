@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "Dias Calle (Clte-Vend) Local Claude"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "caf2e899-da50-49a5-a145-e253997d123f"
+  }
+}
